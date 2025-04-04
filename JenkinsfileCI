@@ -32,7 +32,7 @@ pipeline{
         }
 
         stage('Building Images...'){
-            parralel{
+            parallel{
                 stage('building backend image'){
                     steps{
                         echo 'Creating php build...'
