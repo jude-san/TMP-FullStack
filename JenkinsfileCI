@@ -1,0 +1,92 @@
+pipeline{
+    agent any
+
+    environment {
+        // DockerHub credentials and repository info
+        DOCKER_HUB_CREDS = credentials('dockerhub-credentials')
+        DOCKER_HUB_REPO = 'judekhay'  // Replace with your DockerHub username
+
+        // Image names and tags
+        // API_IMAGE = "${DOCKER_HUB_REPO}/banking-api"
+        BACKEND_IMAGE = "${DOCKER_HUB_REPO}/banking-backend"
+        FRONTEND_IMAGE = "${DOCKER_HUB_REPO}/banking-frontend"
+        SERVER_IMAGE = "${DOCKER_HUB_REPO}/banking-server"
+
+        // Version tag based on build number
+        VERSION = "v1.0.${BUILD_NUMBER}"
+
+        // Dev server SSH details
+
+        SSH_KEY = credentials('ec2-key')
+
+        DEV_SERVER = 'ubuntu@3.93.10.172'
+    }
+
+
+    stages{
+
+        stage('checkout'){
+            steps{
+                checkout scm
+            }
+        }
+
+        stage('Building Images...'){
+            parralel{
+                steps{
+                    echo 'Creating php build...'
+                    dir('back-end/dockerfiles') {
+                        sh '''
+                            docker buildx build -t ${BACKEND_IMAGE}:${VERSION} . -f php.jude.dockerfile
+                        '''
+                    }
+
+                    
+                }
+
+                steps{
+                    echo 'Creating node build...'
+                    dir('front-end') {
+                        sh '''
+                            docker buildx build -t ${FRONTEND_IMAGE}:${VERSION} . -f frontend.dockerfile
+                        '''
+                    }
+
+                    
+                }
+
+                steps{
+                    echo 'Creating nginx build...'
+                    dir('back-end/dockerfiles') {
+                        sh '''
+                            docker buildx build -t ${SERVER_IMAGE}:${VERSION} . -f nginx.dockerfile
+                        '''
+                    }                   
+                }
+            }
+        }
+
+        stage('Pushing Images...'){
+            steps{
+                // Login to DockerHub
+                sh 'echo ${DOCKER_HUB_CREDS_PSW} | docker login -u ${DOCKER_HUB_CREDS_USR} --password-stdin'
+
+                sh '''
+                    echo $DOCKER_HUB_PASS | docker login -u $DOCKER_HUB_USER --password-stdin
+                    docker push ${BACKEND_IMAGE}:${VERSION}
+                    docker push ${FRONTEND_IMAGE}:${VERSION}
+                    docker push ${SERVER_IMAGE}:${VERSION}
+                '''
+
+                echo 'Images pushed to DockerHub!'
+            
+            }
+        }
+    }
+
+    post {
+        always {
+
+        }
+    }
+}
