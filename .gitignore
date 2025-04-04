@@ -1,0 +1,7 @@
+# TMP-FullStack
+.next
+node_modules
+.env
+package-lock.json
+composer.lock
+mysql_data

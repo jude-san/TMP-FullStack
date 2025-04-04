@@ -1,0 +1,78 @@
+# version: "3.8"
+services:
+  nginx:
+    container_name: fullstack_nginx
+    build:
+      context: .
+      dockerfile: back-end/dockerfiles/nginx.dockerfile
+    ports:
+      - "8000:8000"
+    networks:
+      - backend
+
+  mysql:
+    image: mysql:8.0.1
+    restart: unless-stopped
+    tty: true
+    init: true
+    container_name: fullstack_db
+    env_file:
+      - ./back-end/.env
+    # environment:
+    #   MYSQL_DATABASE: ${DB_DATABASE}
+    #   MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    #   MYSQL_PASSWORD: ${DB_PASSWORD}
+    #   MYSQL_USER: ${DB_USERNAME}
+    volumes:
+      - ./back-end/mysql_data:/var/lib/mysql
+    expose:
+      - "3306"
+    networks:
+      - backend
+
+  redis:
+    container_name: fullstack_redis
+    image: redis:alpine
+    expose:
+      - "6379"
+    networks:
+      - backend
+
+  php:
+    container_name: fullstack_php
+    restart: unless-stopped
+    build:
+      context: ./back-end
+      dockerfile: dockerfiles/php.jude.dockerfile
+    env_file:
+      - ./back-end/.env
+    ports:
+      - "9000:9000"
+    expose:
+      - "9000"
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - backend
+
+  ############ configuring the front-end service ############
+  node:
+    container_name: fullstack_node
+    build:
+      context: ./front-end
+      dockerfile: frontend.dockerfile
+    env_file:
+      - ./front-end/.env
+    ports:
+      - "3000:3000"
+    expose:
+      - "3000"
+    depends_on:
+      - php
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
