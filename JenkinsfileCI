@@ -90,7 +90,14 @@ pipeline{
 
     post {
         always {
+            sh '''
+                # Clean up Docker images to save space
+                docker rmi ${BACKEND_IMAGE}:${VERSION} || true
+                docker rmi ${FRONTEND_IMAGE}:${VERSION} || true
+                docker rmi ${SERVER_IMAGE}:${VERSION} || true
+            '''
 
+            sh 'docker logout'
         }
     }
 }
