@@ -50,7 +50,7 @@ pipeline{
                         echo 'Creating node build...'
                         dir('front-end') {
                             sh '''
-                                docker buildx build -t ${FRONTEND_IMAGE}:${VERSION} -f ./front-end/frontend.dockerfile .
+                                docker buildx build -t ${FRONTEND_IMAGE}:${VERSION} -f ./frontend.dockerfile .
                             '''
                         }
                     }
@@ -61,7 +61,7 @@ pipeline{
                     steps{
                         echo 'Creating nginx build...'
                             sh '''
-                                docker buildx build -t ${SERVER_IMAGE}:${VERSION} -f ./dockerfiles/nginx.dockerfile .
+                                docker buildx build -t ${SERVER_IMAGE}:${VERSION} -f ./back-end/dockerfiles/nginx.dockerfile .
                             '''                 
                     }
                 }
@@ -71,10 +71,9 @@ pipeline{
         stage('Pushing Images...'){
             steps{
                 // Login to DockerHub
-                sh 'echo ${DOCKER_HUB_CREDS_PSW} | docker login -u ${DOCKER_HUB_CREDS_USR} --password-stdin'
+                // sh 'echo ${DOCKER_HUB_CREDS_PSW} | docker login -u ${DOCKER_HUB_CREDS_USR} --password-stdin'
 
                 sh '''
-                    echo $DOCKER_HUB_PASS | docker login -u $DOCKER_HUB_USER --password-stdin
                     docker push ${BACKEND_IMAGE}:${VERSION}
                     docker push ${FRONTEND_IMAGE}:${VERSION}
                     docker push ${SERVER_IMAGE}:${VERSION}
