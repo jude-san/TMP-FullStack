@@ -1,4 +1,4 @@
-.env.example
+/.env.example
 README.md
 node_modules
 package-lock.json
@@ -14,7 +14,6 @@ mysql_data
 /storage/*.key
 /vendor
 /dockerfiles
-.env.backup
 .phpunit.result.cache
 docker-compose.override.yml
 Homestead.json
