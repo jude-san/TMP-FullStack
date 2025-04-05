@@ -5,8 +5,6 @@ FROM node:18-alpine AS base
 FROM base AS deps
 WORKDIR /app
 
-# ENV file
-COPY .env .env
 
 # Copy package files
 COPY package.json package-lock.json* ./

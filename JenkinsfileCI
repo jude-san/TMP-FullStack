@@ -7,10 +7,10 @@ pipeline{
         DOCKER_HUB_REPO = 'judekhay'  // Replace with your DockerHub username
 
         // Image names and tags
-        // API_IMAGE = "${DOCKER_HUB_REPO}/banking-api"
-        BACKEND_IMAGE = "${DOCKER_HUB_REPO}/banking-backend"
-        FRONTEND_IMAGE = "${DOCKER_HUB_REPO}/banking-frontend"
-        SERVER_IMAGE = "${DOCKER_HUB_REPO}/banking-server"
+        // API_IMAGE = "${DOCKER_HUB_REPO}/CLM-api"
+        BACKEND_IMAGE = "${DOCKER_HUB_REPO}/CLM-backend"
+        FRONTEND_IMAGE = "${DOCKER_HUB_REPO}/CLM-frontend"
+        SERVER_IMAGE = "${DOCKER_HUB_REPO}/CLM-server"
 
         // Version tag based on build number
         VERSION = "v1.0.${BUILD_NUMBER}"
@@ -71,7 +71,7 @@ pipeline{
         stage('Pushing Images...'){
             steps{
                 // Login to DockerHub
-                // sh 'echo ${DOCKER_HUB_CREDS_PSW} | docker login -u ${DOCKER_HUB_CREDS_USR} --password-stdin'
+                sh 'echo ${DOCKER_HUB_CREDS_PSW} | docker login -u ${DOCKER_HUB_CREDS_USR} --password-stdin'
 
                 sh '''
                     docker push ${BACKEND_IMAGE}:${VERSION}
