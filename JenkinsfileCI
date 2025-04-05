@@ -60,11 +60,9 @@ pipeline{
                 stage('building nginx image'){
                     steps{
                         echo 'Creating nginx build...'
-                        dir('back-end') {
                             sh '''
                                 docker buildx build -t ${SERVER_IMAGE}:${VERSION} -f ./dockerfiles/nginx.dockerfile .
-                            '''
-                        }                   
+                            '''                 
                     }
                 }
             }
