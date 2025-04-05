@@ -48,9 +48,11 @@ pipeline{
                 stage('building node image'){
                     steps{
                         echo 'Creating node build...'
+                        dir('front-end') {
                             sh '''
-                                docker buildx build -t ${FRONTEND_IMAGE}:${VERSION} -f ./front-end/frontend.dockerfile .
+                                docker buildx build -t ${FRONTEND_IMAGE}:${VERSION} -f ./frontend.dockerfile .
                             '''
+                        }
                     }
                 }
 
