@@ -8,9 +8,9 @@ pipeline{
 
         // Image names and tags
         // API_IMAGE = "${DOCKER_HUB_REPO}/CLM-api"
-        BACKEND_IMAGE = "${DOCKER_HUB_REPO}/CLM-backend"
-        FRONTEND_IMAGE = "${DOCKER_HUB_REPO}/CLM-frontend"
-        SERVER_IMAGE = "${DOCKER_HUB_REPO}/CLM-server"
+        BACKEND_IMAGE = "${DOCKER_HUB_REPO}/clm-backend"
+        FRONTEND_IMAGE = "${DOCKER_HUB_REPO}/clm-frontend"
+        SERVER_IMAGE = "${DOCKER_HUB_REPO}/clm-server"
 
         // Version tag based on build number
         VERSION = "v1.0.${BUILD_NUMBER}"
