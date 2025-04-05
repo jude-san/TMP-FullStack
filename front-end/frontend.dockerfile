@@ -6,7 +6,7 @@ FROM base AS deps
 WORKDIR /app
 
 # ENV file
-COPY /front-end/.env .
+COPY .env .env
 
 # Copy package files
 COPY package.json package-lock.json* ./
