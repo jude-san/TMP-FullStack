@@ -5,6 +5,9 @@ FROM node:18-alpine AS base
 FROM base AS deps
 WORKDIR /app
 
+# ENV file
+COPY .env ./
+
 # Copy package files
 COPY package.json package-lock.json* ./
 
@@ -44,7 +47,7 @@ COPY --from=builder /app/public ./public
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-COPY .env .env
+
 
 # Switch to non-root user
 USER nextjs
